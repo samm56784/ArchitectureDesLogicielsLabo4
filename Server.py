@@ -24,6 +24,8 @@ class Database:
         newTweets=[]
         newTweets= self.tweets[nombreEntrées-10:nombreEntrées]
         return newTweets
+    def load_all_tweets(self) :
+        return self.tweets
 
 
 class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
@@ -72,17 +74,17 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
             self.path = 'Display.html'
         elif self.path.startswith('/Afficher') :
-            data = ''
+            data = ' '
 
-            query_components = parse_qs(urlparse(self.path).query)
-            if 'query' in query_components:
-                data = query_components['query'][0]
+           # query_components = parse_qs(urlparse(self.path).query)
+            #if 'query' in query_components:
+               # data = query_components['query'][0]
 
             headers = TwitterAPI.create_twitter_headers()
             url, params = TwitterAPI.create_twitter_url(data)
             json_response = TwitterAPI.query_twitter_api(url, headers, params)
             #tweets = json_response['data']
-            all_tweets = self.db.tweets()
+            all_tweets = self.db.load_all_tweets()
             tweets_to_display = ''
             for tweet in all_tweets:
                 tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
