@@ -15,6 +15,14 @@ class TestDatabase(unittest.TestCase):
 
         self.assertFalse(testvalue, message)
 
+    def test_can_save_tweets_in_database(self):
+        tweet = {
+            "username": "sdumas",
+            "tweet": "Bonjour!"
+        }
+        self.db.tweets = [tweet]
+        saved_tweets = self.db.load_tweets()
+        self.assertEqual(saved_tweets[0], tweet)
 
 class TestServer(unittest.TestCase):
     pass
