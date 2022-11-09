@@ -15,11 +15,16 @@ class TestDatabase(unittest.TestCase):
 
         self.assertFalse(testvalue, message)
 
+    def test_empty_query(self):
+        TwitterAPI.query_twitter_api(TwitterAPI.create_twitter_url(self), TwitterAPI.create_twitter_headers(self), 10)
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+
     def test_delete_tweet_db(self):
         tweet = {
             "username": "sdumas",
             "tweet": "Je fais un tweet!"
         }
+        self.db.tweets = [tweet]
         saved_tweet = self.db.load_tweets()
         saved_tweet = self.db.flush_tweets()
         self.assertIsNone(saved_tweet)
