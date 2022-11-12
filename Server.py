@@ -47,32 +47,53 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             headers = TwitterAPI.create_twitter_headers()
             url, params = TwitterAPI.create_twitter_url(data)
             json_response = TwitterAPI.query_twitter_api(url, headers, params)
-            tweets = json_response['data']
+            print(json_response)
+            #tweets = json_response['data']
+            if "errors" in json_response:
+                if json_response['errors'][0]['message'] == "Invalid 'query':''. 'query' must be a non-empty string":
+                    tweets_to_display = ''
+                    tweets_to_display += '<div> <li>' + '</li> </div>'
+
+                    text_to_display = ''
+                    with open('Display.html', 'r') as file:
+                        text_to_display = f"{file.read()}".format(**locals())
+
+                    self.send_response(HTTPStatus.OK)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+
+                    self.wfile.write(text_to_display.encode('utf-8'))
+                    self.wfile.close()
+
+                    self.path = 'Display.html'
+            else:
+                tweets = json_response['data']
+                self.db.save_tweets(tweets)
+
+                # Assume that right here, we load the tweets from a SQL database
+
+                all_tweets = self.db.load_new_tweets()
+
+                tweets_to_display = ''
+                for tweet in all_tweets:
+                    tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
+
+                text_to_display = ''
+                with open('Display.html', 'r') as file:
+                    text_to_display = f"{file.read()}".format(**locals())
+
+                self.send_response(HTTPStatus.OK)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                self.wfile.write(text_to_display.encode('utf-8'))
+                self.wfile.close()
+
+                self.path = 'Display.html'
+
 
             # Assume that right here, we save the tweets into a SQL databases
            # self.db.flush_tweets()
-            self.db.save_tweets(tweets)
-
-            # Assume that right here, we load the tweets from a SQL database
-
-            all_tweets = self.db.load_new_tweets()
-
-            tweets_to_display = ''
-            for tweet in all_tweets:
-                tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
-
-            text_to_display = ''
-            with open('Display.html', 'r') as file:
-                text_to_display = f"{file.read()}".format(**locals())
-
-            self.send_response(HTTPStatus.OK)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-
-            self.wfile.write(text_to_display.encode('utf-8'))
-            self.wfile.close()
-
-            self.path = 'Display.html'
         elif self.path.startswith('/Afficher') :
             data = ' '
 

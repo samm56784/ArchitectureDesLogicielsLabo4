@@ -1,6 +1,6 @@
 import requests
 
-BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACZnigEAAAAAOBEkkp0cQ1oc5LFfwngqLnWQDl4%3D4Uqkn5LTHisSxXbYdrRPgos2TG5h7l1IxjM2q62G2sIzlrRAoy'
+BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACZnigEAAAAAKEX%2BtgiZRimdjsC6JctgZzmtj2Q%3DoSMCn4ImvCAIOBXBzd5dRUHZZgYRRSZDOzHnrVnTjhsFwhGPhk'
 
 
 class TwitterAPI:
@@ -28,6 +28,10 @@ class TwitterAPI:
     @staticmethod
     def query_twitter_api(url, headers, params):
         response = requests.request('GET', url, headers=headers, params=params)
+        if "errors" in response.json():
+            print(response.json()['errors'][0]['message'])
+            #print(response.json())
+        print(response.json())
         return response.json()
 
 
