@@ -12,7 +12,6 @@ class TestDatabase(unittest.TestCase):
     def test_can_load_tweets(self):
         testvalue = False
         message = "not false"
-
         self.assertFalse(testvalue, message)
 
     def test_delete_tweet_db(self):
