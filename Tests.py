@@ -33,6 +33,12 @@ class TestDatabase(unittest.TestCase):
         saved_tweets = self.db.load_tweets()
         self.assertEqual(saved_tweets[0], tweet)
 
+    def test_query_vide(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['errors'][0]['message'], "Invalid 'query':''. 'query' must be a non-empty string")
+
 
 class TestServer(unittest.TestCase):
     pass

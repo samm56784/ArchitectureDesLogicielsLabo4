@@ -52,7 +52,9 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             if "errors" in json_response:
                 if json_response['errors'][0]['message'] == "Invalid 'query':''. 'query' must be a non-empty string":
                     tweets_to_display = ''
+                    tweets_to_display += '<div> <li>' + '</li> </div>'
                     tweets_to_display += '<div> <li>' + "aucun texte dans la query box" + '</li> </div>'
+
 
                     text_to_display = ''
                     with open('Display.html', 'r') as file:
