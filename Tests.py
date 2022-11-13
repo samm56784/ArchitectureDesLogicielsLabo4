@@ -10,9 +10,11 @@ class TestDatabase(unittest.TestCase):
         self.db = None
 
     def test_can_load_tweets(self):
-        testvalue = False
-        message = "not false"
-        self.assertFalse(testvalue, message)
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url(
+            'allo')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertIsNotNone(json_response['data'])
 
     def test_delete_tweet_db(self):
         tweet = {
