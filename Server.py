@@ -46,30 +46,59 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
             headers = TwitterAPI.create_twitter_headers()
             url, params = TwitterAPI.create_twitter_url(data)
-            json_response = TwitterAPI.query_twitter_api(url, headers, params)
+            try:
+                json_response = TwitterAPI.query_twitter_api(url, headers, params)
+            except:
+                tweets_to_display = '<div> <li>' + '</li> </div>'
+                text_to_display = ''
+                with open('Display.html', 'r') as file:
+                    text_to_display = f"{file.read()}".format(**locals())
+                self.send_response(HTTPStatus.OK)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                self.wfile.write(text_to_display.encode('utf-8'))
+                self.wfile.close()
+                self.path = 'Display.html'
+
             print(json_response)
             #tweets = json_response['data']
             if "errors" in json_response:
-                if json_response['errors'][0]['message'] == "Invalid 'query':''. 'query' must be a non-empty string":
-                    tweets_to_display = ''
-                    tweets_to_display += '<div> <li>' + '</li> </div>'
-                    tweets_to_display += '<div> <li>' + "aucun texte dans la query box" + '</li> </div>'
+                erreur = json_response['errors'][0]['message']
+                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
 
+                text_to_display = ''
+                with open('Display.html', 'r') as file:
+                    text_to_display = f"{file.read()}".format(**locals())
 
+                self.send_response(HTTPStatus.OK)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                self.wfile.write(text_to_display.encode('utf-8'))
+                self.wfile.close()
+
+                self.path = 'Display.html'
+
+            else:
+                try:
+                    tweets = json_response['data']
+                except:
+                    erreur=""
+                    if "meta" in json_response:
+                        erreur = "pas de resultat a la recherche"
+                    tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
                     text_to_display = ''
                     with open('Display.html', 'r') as file:
                         text_to_display = f"{file.read()}".format(**locals())
-
                     self.send_response(HTTPStatus.OK)
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()
 
                     self.wfile.write(text_to_display.encode('utf-8'))
                     self.wfile.close()
-
                     self.path = 'Display.html'
-            else:
-                tweets = json_response['data']
+
                 self.db.save_tweets(tweets)
 
                 # Assume that right here, we load the tweets from a SQL database
