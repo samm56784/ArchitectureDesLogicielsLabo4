@@ -35,6 +35,15 @@ class TestDatabase(unittest.TestCase):
         saved_tweets = self.db.load_tweets()
         self.assertEqual(saved_tweets[0], tweet)
 
+    def test_url_vide(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url(
+            'allo')
+        url = ''
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertEqual(json_response, "Invalid URL")
+
     def test_aucun_resultat(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('ggUYDGUYAgduyasgydgsgfuygafkufgkjhfgsajhkfgajkhsfgjakhsdgfajhksfgjahskdgfasjkhdfgajhkfg')

@@ -27,12 +27,25 @@ class TwitterAPI:
 
     @staticmethod
     def query_twitter_api(url, headers, params):
-        response = requests.request('GET', url, headers=headers, params=params)
-        if "errors" in response.json():
+        try:
+            response = requests.request('GET', url, headers=headers, params=params)
+            if "errors" in response.json():
+                print(response.json()['errors'][0]['message'])
+                # print(response.json())
+            print(response.json())
+            return response.json()
+
+        except:
+            if url == '':
+                response = "Invalid URL"
+                return response
+            print(requests.RequestException.request)
+        #print(url)
+        '''if "errors" in response.json():
             print(response.json()['errors'][0]['message'])
             #print(response.json())
         print(response.json())
-        return response.json()
+        return response.json()'''
 
 
 
