@@ -35,14 +35,21 @@ class TestDatabase(unittest.TestCase):
         saved_tweets = self.db.load_tweets()
         self.assertEqual(saved_tweets[0], tweet)
 
-    def test_url_vide(self):
+    def test_pas_de_header(self):
+        headers = ''
+        url, params = TwitterAPI.create_twitter_url(
+            'allo')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertEqual(json_response['type'], 'about:blank' )
+    def test_url_non_valide(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(
             'allo')
-        url = ''
+        url = 'bjkfbskdfsjkbfd'
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        self.assertEqual(json_response, "Invalid URL")
+        self.assertIn("Invalid URL", str(json_response) )
 
     def test_aucun_resultat(self):
         headers = TwitterAPI.create_twitter_headers()

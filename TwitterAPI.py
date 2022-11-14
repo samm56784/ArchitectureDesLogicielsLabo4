@@ -32,14 +32,20 @@ class TwitterAPI:
             if "errors" in response.json():
                 print(response.json()['errors'][0]['message'])
                 # print(response.json())
+            elif "title" in response.json():
+                print(response.json()['type'])
             print(response.json())
             return response.json()
 
-        except:
-            if url == '':
-                response = "Invalid URL"
-                return response
-            print(requests.RequestException.request)
+        except requests.exceptions.RequestException as e:
+            response = e
+            print(e)
+            return response
+            #if url == '':
+                #print(requests.RequestException)
+                #response = "URL vide"
+                #return response
+            #print(requests.RequestException.request)
         #print(url)
         '''if "errors" in response.json():
             print(response.json()['errors'][0]['message'])

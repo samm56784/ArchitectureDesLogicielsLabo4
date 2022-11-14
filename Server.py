@@ -32,6 +32,8 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
     db = Database()
 
     def do_GET(self):
+        if not (self.path.startswith('/queryTwitter') or self.path.startswith('/Afficher')) :
+            self.path = 'Search.html'
         if self.path == '/':
             self.path = 'Search.html'
 
@@ -49,6 +51,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             try:
                 json_response = TwitterAPI.query_twitter_api(url, headers, params)
             except:
+                print(json_response)
                 tweets_to_display = '<div> <li>' + '</li> </div>'
                 text_to_display = ''
                 with open('Display.html', 'r') as file:
@@ -61,7 +64,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.close()
                 self.path = 'Display.html'
 
-            print(json_response)
+            #print(json_response)
             #tweets = json_response['data']
             if "errors" in json_response:
                 erreur = json_response['errors'][0]['message']
@@ -137,9 +140,13 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             json_response = TwitterAPI.query_twitter_api(url, headers, params)
             #tweets = json_response['data']
             all_tweets = self.db.load_all_tweets()
+            print(all_tweets)
             tweets_to_display = ''
-            for tweet in all_tweets:
-                tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
+            if len(all_tweets) == 0:
+                tweets_to_display += '<div> <li>' + "Aucun Tweet a afficher..." + '</li> </div>'
+            else:
+                for tweet in all_tweets:
+                    tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
 
             text_to_display = ''
             with open('Allo.html', 'r') as file:
