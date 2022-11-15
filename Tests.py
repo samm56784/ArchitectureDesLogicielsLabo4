@@ -42,6 +42,14 @@ class TestDatabase(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
         self.assertEqual(json_response['type'], 'about:blank' )
+
+    '''def test_header_invalide(self):
+        headers = 'cmmkmkmkvmsdkmvksmvlkmslkvmsklvmslkvsm'
+        url, params = TwitterAPI.create_twitter_url(
+            'allo')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertEqual(json_response['type'], 'about:blank')'''
     def test_url_non_valide(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(
@@ -50,7 +58,12 @@ class TestDatabase(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
         self.assertIn("Invalid URL", str(json_response) )
-
+    def test_query_a(self): #pour x raison la lettre a seule crée une erreur, je fais donc un test pour voir si le tout est géré
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('a')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['errors'][0]['message'],
+                         "There were errors processing your request: Rules must contain at least one positive, non-stopword clause (at position 1)")
     def test_aucun_resultat(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('ggUYDGUYAgduyasgydgsgfuygafkufgkjhfgsajhkfgajkhsfgjakhsdgfajhksfgjahskdgfasjkhdfgajhkfg')

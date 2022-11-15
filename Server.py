@@ -32,11 +32,11 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
     db = Database()
 
     def do_GET(self):
-        if not (self.path.startswith('/queryTwitter') or self.path.startswith('/Afficher')) :
-            self.path = 'Search.html'
         if self.path == '/':
             self.path = 'Search.html'
-
+            return SimpleHTTPRequestHandler.do_GET(self)
+        if not (self.path.startswith('/queryTwitter') or self.path.startswith('/Afficher')) :
+            self.path = 'Search.html'
             return SimpleHTTPRequestHandler.do_GET(self)
 
         if self.path.startswith('/queryTwitter'):
