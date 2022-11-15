@@ -1,7 +1,7 @@
 import requests
 import json
 
-BEARER_TOKEN = 'sdfsdfsdfdfdf' #'AAAAAAAAAAAAAAAAAAAAAGZnigEAAAAATtb8ZPVPUQgujjapXQoJuO9QJlY%3DzSUYlmBf6zM0lxecyKULxbahXyDB82kcelsEhkTr0d3ogaMzfZ'
+BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAGZnigEAAAAATtb8ZPVPUQgujjapXQoJuO9QJlY%3DzSUYlmBf6zM0lxecyKULxbahXyDB82kcelsEhkTr0d3ogaMzfZ'
 
 class TwitterAPI:
     @staticmethod

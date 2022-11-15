@@ -186,7 +186,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                     tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
 
             text_to_display = ''
-            with open('Allo.html', 'r') as file:
+            with open('Display.html', 'r') as file:
                 text_to_display = f"{file.read()}".format(**locals())
 
             self.send_response(HTTPStatus.OK)
@@ -196,7 +196,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(text_to_display.encode('utf-8'))
             self.wfile.close()
 
-            self.path = 'Allo.html'
+            self.path = 'Display.html'
         else :
             return
 

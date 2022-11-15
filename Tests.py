@@ -8,7 +8,6 @@ class TestDatabase(unittest.TestCase):
 
     def tearDown(self):
         self.db = None
-
     def test_can_load_tweets(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(
