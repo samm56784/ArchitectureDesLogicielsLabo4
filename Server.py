@@ -3,7 +3,7 @@ from TwitterAPI import TwitterAPI
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from http import HTTPStatus
-
+import json
 
 class Database:
     tweets = []
@@ -46,13 +46,13 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             if 'query' in query_components:
                 data = query_components['query'][0]
 
-            headers = TwitterAPI.create_twitter_headers()
-            url, params = TwitterAPI.create_twitter_url(data)
             try:
+                headers = TwitterAPI.create_twitter_headers()
+                url, params = TwitterAPI.create_twitter_url(data)
                 json_response = TwitterAPI.query_twitter_api(url, headers, params)
-            except:
-                print(json_response)
-                tweets_to_display = '<div> <li>' + '</li> </div>'
+
+            except json.decoder.JSONDecodeError as p:
+                tweets_to_display = '<div> <li>' + "erreur headers" + '</li> </div>'
                 text_to_display = ''
                 with open('Display.html', 'r') as file:
                     text_to_display = f"{file.read()}".format(**locals())
@@ -63,6 +63,19 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(text_to_display.encode('utf-8'))
                 self.wfile.close()
                 self.path = 'Display.html'
+            except:
+                tweets_to_display = '<div> <li>' + '</li> </div>'
+                text_to_display = ''
+                with open('Display.html', 'r') as file:
+                    text_to_display = f"{file.read()}".format(**locals())
+                #self.send_response(HTTPStatus.OK)
+                #self.send_header('Content-type', 'text/html')
+                #self.end_headers()
+
+                self.wfile.write(text_to_display.encode('utf-8'))
+                self.wfile.close()
+                self.path = 'Display.html'
+                return
 
             #print(json_response)
             #tweets = json_response['data']
@@ -82,14 +95,36 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.close()
 
                 self.path = 'Display.html'
+                return
 
             else:
                 try:
                     tweets = json_response['data']
+                    self.db.save_tweets(tweets)
+                except json.decoder.JSONDecodeError as p:
+                    tweets_to_display = '<div> <li>' + "erreur headers" + '</li> </div>'
+                    text_to_display = ''
+                    with open('Display.html', 'r') as file:
+                        text_to_display = f"{file.read()}".format(**locals())
+                    self.send_response(HTTPStatus.OK)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+
+                    self.wfile.write(text_to_display.encode('utf-8'))
+                    self.wfile.close()
+                    self.path = 'Display.html'
+                    return
                 except:
+                    print(json_response)
+                    print(json_response)
+                    print(json_response)
+                    print(json_response)
+                    print(json_response)
                     erreur=""
                     if "meta" in json_response:
                         erreur = "pas de resultat a la recherche"
+                    else:
+                        erreur = str(json_response)
                     tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
                     text_to_display = ''
                     with open('Display.html', 'r') as file:
@@ -101,8 +136,9 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                     self.wfile.write(text_to_display.encode('utf-8'))
                     self.wfile.close()
                     self.path = 'Display.html'
+                    return
 
-                self.db.save_tweets(tweets)
+
 
                 # Assume that right here, we load the tweets from a SQL database
 
@@ -124,6 +160,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.close()
 
                 self.path = 'Display.html'
+                return
 
 
             # Assume that right here, we save the tweets into a SQL databases
