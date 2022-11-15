@@ -6,8 +6,7 @@ BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACZnigEAAAAAMr%2BgKhxvcosY%2Fip0F%2BJYiaS7wc
 
 class TwitterAPI:
     @staticmethod
-    def create_twitter_headers():
-        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
+    def create_twitter_headers(headers={'Authorization': f'Bearer {BEARER_TOKEN}'}):
         return headers
 
     @staticmethod

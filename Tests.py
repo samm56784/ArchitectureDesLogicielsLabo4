@@ -9,7 +9,7 @@ class TestDatabase(unittest.TestCase):
     def tearDown(self):
         self.db = None
 
-    def test_can_load_tweets(self):
+    '''def test_can_load_tweets(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(
             'allo')
@@ -24,9 +24,16 @@ class TestDatabase(unittest.TestCase):
         self.db.tweets = [tweet]
         saved_tweet = self.db.load_tweets()
         saved_tweet = self.db.flush_tweets()
-        self.assertIsNone(saved_tweet)
+        self.assertIsNone(saved_tweet)'''
+    def test_bearer_token_invalide(self):
+        headers = TwitterAPI.create_twitter_headers('khiusdhuvhsiushuhvsudviusdhvd')
+        url, params = TwitterAPI.create_twitter_url(
+            'allo')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertEqual(str(json_response), "Expecting value: line 1 column 1 (char 0)")
 
-    def test_can_save_tweets_in_database(self):
+    '''def test_can_save_tweets_in_database(self):
         tweet = {
             "username": "sdumas",
             "tweet": "Bonjour!"
@@ -72,7 +79,7 @@ class TestDatabase(unittest.TestCase):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('')
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['errors'][0]['message'], "Invalid 'query':''. 'query' must be a non-empty string")
+        self.assertEqual(json_response['errors'][0]['message'], "Invalid 'query':''. 'query' must be a non-empty string")'''
 
 
 class TestServer(unittest.TestCase):
