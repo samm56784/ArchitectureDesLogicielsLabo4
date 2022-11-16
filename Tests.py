@@ -88,6 +88,14 @@ class TestDatabase(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['errors'][0]['message'], "Invalid 'query':''. 'query' must be a non-empty string")
 
+    def test_aucun_params(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('allo')
+        params.clear()
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertIn('query parameter can not be empty', str(json_response))
+
 
 class TestServer(unittest.TestCase):
     pass
