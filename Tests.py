@@ -112,7 +112,8 @@ class TestDatabase(unittest.TestCase):
         }
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        self.assertIn('expansions', str(json_response)) and self.assertIn('is not one of', str(json_response))
+        self.assertIn('expansions', str(json_response))
+        self.assertIn('is not one of', str(json_response))
 
     def test_tweetfield_params_invalides(self):
         headers = TwitterAPI.create_twitter_headers()
@@ -129,7 +130,8 @@ class TestDatabase(unittest.TestCase):
         }
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        self.assertIn('tweet.field', str(json_response)) and self.assertIn('is not one of', str(json_response))
+        self.assertIn('tweet.field', str(json_response))
+        self.assertIn('is not one of', str(json_response))
 
     def test_userfield_params_invalides(self):
         headers = TwitterAPI.create_twitter_headers()
@@ -147,7 +149,8 @@ class TestDatabase(unittest.TestCase):
         }
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        self.assertIn('user.field', str(json_response)) and self.assertIn('is not one of', str(json_response))
+        self.assertIn('user.field', str(json_response))
+        self.assertIn('is not one of', str(json_response))
 
     def test_placefield_params_invalides(self):
         headers = TwitterAPI.create_twitter_headers()
@@ -160,14 +163,69 @@ class TestDatabase(unittest.TestCase):
             'tweet.fields': 'id,text,author_id,in_reply_to_user_id,geo,conversation_id,created_at,lang,'
                             'public_metrics,referenced_tweets,reply_settings,source',
             'user.fields': 'id,name,username,created_at,description,public_metrics,verified',
-            'place.fields': 'jncjasbjcancjancjnlsknclasc',
+            'place.fields': 'guiasguasuidgiausgdiuasduiadgaiud',
             'next_token': {}
         }
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        self.assertIn('place.field', str(json_response)) and self.assertIn('is not one of', str(json_response))
+        self.assertIn('place.field', str(json_response))
+        self.assertIn('is not one of', str(json_response))
 
+    def test_maxresults_params_invalides(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('allo')
+        params.clear()
+        params = {
+            'query': 'allo',
+            'max_results': '',
+            'expansions': 'author_id,in_reply_to_user_id,geo.place_id',
+            'tweet.fields': 'id,text,author_id,in_reply_to_user_id,geo,conversation_id,created_at,lang,'
+                            'public_metrics,referenced_tweets,reply_settings,source',
+            'user.fields': 'id,name,username,created_at,description,public_metrics,verified',
+            'place.fields': 'full_name,id,country,country_code,geo,name,place_type',
+            'next_token': {}
+        }
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertIn('max_results', str(json_response))
+        self.assertIn('is not a valid Int', str(json_response))
+    def test_maxresultszero_params_invalides(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('allo')
+        params.clear()
+        params = {
+            'query': 'allo',
+            'max_results': 0,
+            'expansions': 'author_id,in_reply_to_user_id,geo.place_id',
+            'tweet.fields': 'id,text,author_id,in_reply_to_user_id,geo,conversation_id,created_at,lang,'
+                            'public_metrics,referenced_tweets,reply_settings,source',
+            'user.fields': 'id,name,username,created_at,description,public_metrics,verified',
+            'place.fields': 'full_name,id,country,country_code,geo,name,place_type',
+            'next_token': {}
+        }
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertIn('max_results', str(json_response))
+        self.assertIn('is not between 10 and 100', str(json_response))
 
+    def test_nexttoken_params_invalides(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('allo')
+        params.clear()
+        params = {
+            'query': 'allo',
+            'max_results': 10,
+            'expansions': 'author_id,in_reply_to_user_id,geo.place_id',
+            'tweet.fields': 'id,text,author_id,in_reply_to_user_id,geo,conversation_id,created_at,lang,'
+                            'public_metrics,referenced_tweets,reply_settings,source',
+            'user.fields': 'id,name,username,created_at,description,public_metrics,verified',
+            'place.fields': 'full_name,id,country,country_code,geo,name,place_type',
+            'next_token':' hjkchvjhjchvsdjhcsdcjhvscjhvjhvjhsdvcjhsdvjcshcvsjhcvsdjscvsjvchs'
+        }
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertIn('next_token', str(json_response))
+        self.assertIn('is not a valid token', str(json_response))
 
 
 
