@@ -4,6 +4,7 @@ import json
 BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAAGZnigEAAAAATtb8ZPVPUQgujjapXQoJuO9QJlY%3DzSUYlmBf6zM0lxecyKULxbahXyDB82kcelsEhkTr0d3ogaMzfZ'
 
 class TwitterAPI:
+
     @staticmethod
     def create_twitter_headers(headers={'Authorization': f'Bearer {BEARER_TOKEN}'}):
         return headers
@@ -24,6 +25,7 @@ class TwitterAPI:
         }
         return search_url, query_params
 
+
     @staticmethod
     def query_twitter_api(url, headers, params):
         try:
@@ -31,7 +33,6 @@ class TwitterAPI:
                 header = json.loads(headers)
             else:
                 header = headers
-            #header = json.loads(headers)
             response = requests.request('GET', url, headers=header, params=params)
             print(response)
             if "errors" in response.json():
@@ -79,17 +80,3 @@ class TwitterAPI:
         except json.decoder.JSONDecodeError as p:
             print(p)
             return p
-            #if url == '':
-                #print(requests.RequestException)
-                #response = "URL vide"
-                #return response
-            #print(requests.RequestException.request)
-        #print(url)
-        '''if "errors" in response.json():
-            print(response.json()['errors'][0]['message'])
-            #print(response.json())
-        print(response.json())
-        return response.json()'''
-
-
-

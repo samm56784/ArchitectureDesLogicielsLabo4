@@ -35,9 +35,20 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
         if self.path == '/':
             self.path = 'Search.html'
             return SimpleHTTPRequestHandler.do_GET(self)
-        if not (self.path.startswith('/queryTwitter') or self.path.startswith('/Afficher')) :
-            self.path = 'Search.html'
+        if not (self.path.startswith('/queryTwitter') or self.path.startswith('/Afficher')):
+            self.path = 'Display.html'
+            tweets_to_display = '<div> <li>' + "erreur url...." + '</li> </div>'
+            text_to_display = ''
+            with open('Display.html', 'r') as file:
+                text_to_display = f"{file.read()}".format(**locals())
+            self.send_response(HTTPStatus.OK)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            self.wfile.write(text_to_display.encode('utf-8'))
+            self.wfile.close()
             return SimpleHTTPRequestHandler.do_GET(self)
+
 
         if self.path.startswith('/queryTwitter'):
             data = ''

@@ -82,6 +82,7 @@ class TestDatabase(unittest.TestCase):
         url, params = TwitterAPI.create_twitter_url('ggUYDGUYAgduyasgydgsgfuygafkufgkjhfgsajhkfgajkhsfgjakhsdgfajhksfgjahskdgfasjkhdfgajhkfg')
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response, {'meta': {'result_count': 0}})
+
     def test_query_vide(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('')
@@ -152,6 +153,7 @@ class TestDatabase(unittest.TestCase):
         self.assertIn('user.field', str(json_response))
         self.assertIn('is not one of', str(json_response))
 
+
     def test_placefield_params_invalides(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('allo')
@@ -189,10 +191,12 @@ class TestDatabase(unittest.TestCase):
         print(json_response)
         self.assertIn('max_results', str(json_response))
         self.assertIn('is not a valid Int', str(json_response))
+
     def test_maxresultszero_params_invalides(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url('allo')
         params.clear()
+        params['max_results'] = 0
         params = {
             'query': 'allo',
             'max_results': 0,
