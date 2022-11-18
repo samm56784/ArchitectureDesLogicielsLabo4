@@ -231,6 +231,13 @@ class TestDatabase(unittest.TestCase):
         self.assertIn('next_token', str(json_response))
         self.assertIn('is not a valid token', str(json_response))
 
+    def test_caractere_invalide(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url('+')
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertIn("There were errors processing your request" ,str(json_response['errors'][0]['message']))
+        self.assertIn("no viable alternative at character", str(json_response['errors'][0]['message']))
+
 
 
 
