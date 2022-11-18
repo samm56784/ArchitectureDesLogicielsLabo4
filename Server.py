@@ -27,6 +27,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
     db = Database()
 
     def do_GET(self):
+        erreur=''
         if self.path == '/':
             self.path = 'Search.html'
             return SimpleHTTPRequestHandler.do_GET(self)
@@ -57,120 +58,56 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
             except json.decoder.JSONDecodeError as p:
                 erreur = "erreur headers..."
-                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
-                text_to_display = ''
-                with open('Display.html', 'r') as file:
-                    text_to_display = f"{file.read()}".format(**locals())
-                self.send_response(HTTPStatus.OK)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
 
-                self.wfile.write(text_to_display.encode('utf-8'))
-                self.wfile.close()
-                self.path = 'Display.html'
             except:
-                erreur = 'erreur inconnue...'
-                tweets_to_display = '<div> <li>' + '</li> </div>'
-                text_to_display = ''
-                with open('Display.html', 'r') as file:
-                    text_to_display = f"{file.read()}".format(**locals())
-
-                self.wfile.write(text_to_display.encode('utf-8'))
-                self.wfile.close()
-                self.path = 'Display.html'
-                return
+                erreur = "erreur inconnue..."
 
             if "errors" in json_response:
-                erreur = json_response['errors'][0]['message']
-                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
+                erreur = str(json_response['errors'][0]['message'])
 
-                text_to_display = ''
-                with open('Display.html', 'r') as file:
-                    text_to_display = f"{file.read()}".format(**locals())
-
-                self.send_response(HTTPStatus.OK)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-
-                self.wfile.write(text_to_display.encode('utf-8'))
-                self.wfile.close()
-
-                self.path = 'Display.html'
-                return
             elif "title" in json_response:
-                erreur = json_response['type']
-                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
-
-                text_to_display = ''
-                with open('Display.html', 'r') as file:
-                    text_to_display = f"{file.read()}".format(**locals())
-
-                self.send_response(HTTPStatus.OK)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-
-                self.wfile.write(text_to_display.encode('utf-8'))
-                self.wfile.close()
-
-                self.path = 'Display.html'
-                return
-
+                if str(json_response['type'])=="about:blank":
+                    erreur = "bearer token invalide..."
+                else:
+                    erreur = str(json_response['type'])
 
             else:
                 try:
                     tweets = json_response['data']
                     self.db.save_tweets(tweets)
                 except json.decoder.JSONDecodeError as p:
-                    tweets_to_display = '<div> <li>' + "erreur headers" + '</li> </div>'
-                    text_to_display = ''
-                    with open('Display.html', 'r') as file:
-                        text_to_display = f"{file.read()}".format(**locals())
-                    self.send_response(HTTPStatus.OK)
-                    self.send_header('Content-type', 'text/html')
-                    self.end_headers()
-
-                    self.wfile.write(text_to_display.encode('utf-8'))
-                    self.wfile.close()
-                    self.path = 'Display.html'
-                    return
+                    erreur = "erreur headers"
                 except:
                     print(json_response)
-                    erreur = ""
                     if "meta" in json_response:
                         erreur = str(json_response['meta'])
                     else:
                         erreur = str(json_response)
-                    tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
-                    text_to_display = ''
-                    with open('Display.html', 'r') as file:
-                        text_to_display = f"{file.read()}".format(**locals())
-                    self.send_response(HTTPStatus.OK)
-                    self.send_header('Content-type', 'text/html')
-                    self.end_headers()
 
-                    self.wfile.write(text_to_display.encode('utf-8'))
-                    self.wfile.close()
-                    self.path = 'Display.html'
-                    return
-
+            if erreur != '':
+                print(erreur)
+                tweets_to_display = ''
+                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
+            else:
+                print(erreur)
                 all_tweets = tweets
                 tweets_to_display = ''
                 for tweet in all_tweets:
-                    tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
+                        tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
 
-                text_to_display = ''
-                with open('Display.html', 'r') as file:
-                    text_to_display = f"{file.read()}".format(**locals())
+            text_to_display = ''
+            with open('Display.html', 'r') as file:
+                text_to_display = f"{file.read()}".format(**locals())
 
-                self.send_response(HTTPStatus.OK)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
+            self.send_response(HTTPStatus.OK)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
 
-                self.wfile.write(text_to_display.encode('utf-8'))
-                self.wfile.close()
+            self.wfile.write(text_to_display.encode('utf-8'))
+            self.wfile.close()
 
-                self.path = 'Display.html'
-                return
+            self.path = 'Display.html'
+            return
 
         elif self.path.startswith('/Afficher') :
             data = ' '
