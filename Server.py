@@ -7,7 +7,6 @@ import json
 
 class Database:
     tweets = []
-    nouveau_tweets = []
 
     def __init__(self):
         self.tweets = []
@@ -57,7 +56,8 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 json_response = TwitterAPI.query_twitter_api(url, headers, params)
 
             except json.decoder.JSONDecodeError as p:
-                tweets_to_display = '<div> <li>' + "erreur headers" + '</li> </div>'
+                erreur = "erreur headers..."
+                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
                 text_to_display = ''
                 with open('Display.html', 'r') as file:
                     text_to_display = f"{file.read()}".format(**locals())
@@ -69,6 +69,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.close()
                 self.path = 'Display.html'
             except:
+                erreur = 'erreur inconnue...'
                 tweets_to_display = '<div> <li>' + '</li> </div>'
                 text_to_display = ''
                 with open('Display.html', 'r') as file:
@@ -96,13 +97,29 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
                 self.path = 'Display.html'
                 return
+            elif "title" in json_response:
+                erreur = json_response['type']
+                tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
+
+                text_to_display = ''
+                with open('Display.html', 'r') as file:
+                    text_to_display = f"{file.read()}".format(**locals())
+
+                self.send_response(HTTPStatus.OK)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                self.wfile.write(text_to_display.encode('utf-8'))
+                self.wfile.close()
+
+                self.path = 'Display.html'
+                return
+
 
             else:
                 try:
                     tweets = json_response['data']
-                    nouveau_tweets = json_response['data']
                     self.db.save_tweets(tweets)
-                    #self.db.save_new_tweets(nouveau_tweets)
                 except json.decoder.JSONDecodeError as p:
                     tweets_to_display = '<div> <li>' + "erreur headers" + '</li> </div>'
                     text_to_display = ''
@@ -118,9 +135,9 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                     return
                 except:
                     print(json_response)
-                    erreur=""
+                    erreur = ""
                     if "meta" in json_response:
-                        erreur = "pas de resultat a la recherche"
+                        erreur = str(json_response['meta'])
                     else:
                         erreur = str(json_response)
                     tweets_to_display = '<div> <li>' + erreur + '</li> </div>'
@@ -136,8 +153,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
                     self.path = 'Display.html'
                     return
 
-                all_tweets = nouveau_tweets
-
+                all_tweets = tweets
                 tweets_to_display = ''
                 for tweet in all_tweets:
                     tweets_to_display += '<div> <li>' + tweet['text'] + '</li> </div>'
