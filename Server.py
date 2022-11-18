@@ -43,7 +43,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
             self.wfile.write(text_to_display.encode('utf-8'))
             self.wfile.close()
-            return SimpleHTTPRequestHandler.do_GET(self)
+            return
 
 
         if self.path.startswith('/queryTwitter'):
