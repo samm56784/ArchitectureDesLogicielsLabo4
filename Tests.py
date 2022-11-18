@@ -238,6 +238,13 @@ class TestDatabase(unittest.TestCase):
         self.assertIn("There were errors processing your request" ,str(json_response['errors'][0]['message']))
         self.assertIn("no viable alternative at character", str(json_response['errors'][0]['message']))
 
+    def test_query_trop_long(self):
+        input = "ajkhbjkasdhjkashdjkashdkasjashasjk"*100
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url(input)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertIn("Rule length exceeds the max allowable.", str(json_response['errors'][0]['message']))
+
 
 
 
