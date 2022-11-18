@@ -37,7 +37,6 @@ class TwitterAPI:
             print(response)
             if "errors" in response.json():
                 print(response.json()['errors'][0]['message'])
-                # print(response.json())
             elif "title" in response.json():
                 print(response.json()['type'])
             print(response.json())
@@ -47,36 +46,7 @@ class TwitterAPI:
             response = e
             print(e)
             return response
-        except requests.exceptions.InvalidHeader as a:
-            response = a
-            print(a)
-            return response
-        except requests.exceptions.BaseHTTPError as h:
-            response = h
-            print(h)
-            return response
-        except requests.HTTPError as g:
-            response = g
-            print(g)
-            return response
-        except requests.RequestException as t:
-            print(t)
-            return t
-        except requests.exceptions.InvalidJSONError as j:
-            print(j)
-            return
-        except requests.exceptions.MissingSchema as s:
-            print(s)
-            return s
-        except requests.exceptions.JSONDecodeError as d:
-            print(d)
-            return d
-        except requests.exceptions.InvalidSchema as v:
-            print(v)
-            return v
-        except requests.exceptions.RequestsWarning as w:
-            print(w)
-            return w
+
         except json.decoder.JSONDecodeError as p:
-            print(p)
-            return p
+            print(str(p))
+            return str(p) + ", erreur headers........"
